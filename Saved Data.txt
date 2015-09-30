@@ -1,0 +1,162 @@
+The saved data contains all information in 'block' and 'labbook' classes. To access these values use 'block.<property name>' or 'labbook.<property name>' respectively.
+
+block
+    .name - file name of the block
+    .path - file path of the block
+
+    .nChannels - number of electrode channels specified in the labbook
+    .nGroups - number of data groups specified in the 'getGroupingConditions' function (equal to 1 if no grouping is specified)
+    .nRep - number of repetitions of the stimuli conditions in the block (nRep = nTotal / nTrials)
+    .selRep - selected repetitions for the consequent processing
+    .nTotal - total number of repetitions in the block (nTotal = nRep * nTrials)
+    .nTrials - number of trials per repetitions (nTrials = nTotal / nRep)
+
+    .stim{<stimulus number>} - data of the stimuli conditions (there are always two stimuli, in case of only one specified in the 'experiment' file the other one will be blank)
+        .label - name of the stimulus (e.g. 'Level, dB')
+        .val - values of the stimulus (e.g. [0 5 10 15 ... 75 80])
+        .len - number of values of the stimulus (equivalent to 'length(block.stim{<stimulus number>}.val)')
+        .ind - index number of the stimulus
+    .stimConditions(nTrials, <number of stimuli> = 2) - sorted [1 2] column-wise stimuli conditions
+    .stimTimings(nTrials, nRep) - the corresponding to 'stimConditions' stimuli timings of all repetitions
+
+    .group{<group number>} - data of the grouping conditions (blank group in case of no groups specified in the 'getGroupingConditions' function)
+        .label - name of the group (e.g. 'Laser')
+        .val - values of the group (e.g. [0 1])
+        .len - number of values of the group (equivalent to 'length(block.group{<group number>}.val)')
+        .sel - selected values of the group in the Raster panel
+
+    .filtStim{<stimuli filter number>} - data of the stimuli filtering conditions (empty in case of no filters specified in the 'getStimuliFilteringConditions' function)
+        .label - name of the stimuli filter (e.g. 'Behavioral')
+        .val - values of the stimuli filter (e.g. [0 1])
+        .len - number of values of the stimuli filter (equivalent to 'length(block.filtStim{<stimuli filter number>}.val)')
+        .sel - selected values of the stimuli filter in the Raster panel
+
+    .filtSpikes{<spikes filter number>} - data of the spikes filtering conditions (empty in case of no filters specified in the 'getSpikesFilteringConditions' function)
+        .label - name of the spikes filter (e.g. 'Cluster')
+        .val - values of the spikes filter (e.g. [7 8 10 15 16 17 25])
+        .len - number of values of the spikes filter (equivalent to 'length(block.filtSpikes{<spikes filter number>}.val)')
+        .sel - selected values of the spikes filter in the Raster panel
+
+    .spikeTimings_raw{<electrode channel>}(<spike number>) - raw (non-suppressed) spike timings detected in a certain electrode channel
+    .spikeTimings_sup{<electrode channel>}(<spike number>) - suppressed spike timings detected in a certain electrode channel
+
+    .snips{<electrode number>}(<spike number>, 62) - spike waveforms
+
+    .timeRasterMin - minimal plotting time relative to the stimuli timings in the Raster plot (ms)
+    .timeRasterMax - maximal plotting time relative to the stimuli timings in the Raster plot (ms)
+    .timeProcMin{<group number>}(<electrode channel>) - minimal processing time in the PSTH plot for each group and channel (ms)
+    .timeProcMax{<group number>}(<electrode channel>) - maximal processing time in the PSTH plot for each group and channel (ms)
+    .autoProcTime{<group number>}(<electrode channel>) - equals to 1 if 'timeProcMin' and 'timeProcMax' are calculated automatically, 0 if a user defined it manually
+    .peakPos{<group number>}(<electrode channel>) - position (latency) of a peak in the PSTH plot (ms)
+    .peakAmp{<group number>}(<electrode channel>) - amplitude of a peak in the PSTH plot (spikes/s)
+    
+    .spikesTimeRaster{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings between 'timeRasterMin{<group number>}(<electrode channel>)' and 'timeRasterMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
+    .spikesTimeProc{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings in the 'timeProcMin{<group number>}(<electrode channel>)' and 'timeProcMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
+    
+    .spontRateMean{<group number>}(<electrode channel>) - average of the spontaneous spike rate activity (spikes/s)
+    .spontRateStd{<group number>}(<electrode channel>) - standard deviation of the spontaneous spike rate activity (spikes/s)
+    .postStimRateMean{<group number>}(<electrode channel>) - average of the post stimuli spike rate activity (spikes/s)
+    .postStimRateStd{<group number>}(<electrode channel>) - standard deviation of the post stimuli spike rate activity (spikes/s)
+    
+    .custom - all custom parameters specific for a certain experiment
+    
+    Additional parameters in experiments that are saved upon execution of the following processing functions:
+    calcTRF ('ToneFine', 'ToneFine2xMix', 'WhiteNoise', '2tones' and 'IsodB2xMix_WN')
+        .TRF{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - TRF plots
+        .TRF_max{<group number>}(<electrode channel>) - maximal value in a corresponding TRF plot
+        .TRF_filt{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - filtered TRF plots
+        .TRF_clean{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - clean TRF plots
+
+    analyseTRF ('ToneFine', 'ToneFine2xMix', 'WhiteNoise' and '2tones')
+        .dPrime{<group number>}(<electrode channel>) - d' of a corresponding TRF plot
+        .BF{<group number>}(<electrode channel>) - Best Frequency (kHz)
+        .Thr{<group number>}(<electrode channel>) - min (threshold) level at Best Frequency (dB)
+        .CF{<group number>}(<electrode channel>) - characteristic frequency (kHz)
+        .BW10{<group number>}(<electrode channel>) - bandwidth at 10 dB above Threshold (oct)
+        .BWat60{<group number>}(<electrode channel>) - bandwidth at 60 dB level (oct)
+
+	calcTuningCurves ('FMS' and 'FMS2xMix')
+        .TRFnum{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
+        .TRFnum_max{<group number>}(<electrode channel>)
+        .TRFrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
+        .TRFrate_max{<group number>}(<electrode channel>)
+        .peakLat_stim1{<group number>}{<electrode channel>}(stim(1).len) - peak latency of spikes grouped for each stim(1) value
+        .peakAmp_stim1{<group number>}{<electrode channel>}(stim(1).len) - peak amplitude of spikes grouped for each stim(1) value
+        .onsetLat_stim1{<group number>}{<electrode channel>}(stim(1).len) - onset latency of spikes grouped for each stim(1) value
+        .peakLat_stim2{<group number>}{<electrode channel>}(stim(2).len) - peak latency of spikes grouped for each stim(2) value
+        .peakAmp_stim2{<group number>}{<electrode channel>}(stim(2).len) - peak amplitude of spikes grouped for each stim(2) value
+        .onsetLat_stim2{<group number>}{<electrode channel>}(stim(2).len) - onset latency of spikes grouped for each stim(2) value
+
+    calcSelectivityInd ('FMS' and 'FMS2xMix')
+        .DSInum{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (spike number)
+        .DSIrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (spike rate)
+        .LSInum{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (spike number)
+        .LSIrate{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (spike rate)
+        .RSInum{<group number>}{<electrode channel>}(2, stim(2).len/2) - frequency sweep rate selectivity indexes (spike number)
+        .RSIrate{<group number>}{<electrode channel>}(2, stim(2).len/2) - frequency sweep rate selectivity indexes (spike rate)
+
+labbook - all labbook data
+    .name - file name of the labbook
+    .path - file path of the labbook
+    
+    .date
+    .expID
+    .experimenter
+    .experimentComments
+
+    .mouse - information about a mouse
+        .age
+    	.dateOfBirth
+    	.strain
+    	.gender
+        .weight
+        .comments
+
+    .exposure - pre-experiment exposure
+        .what
+        .timeWindow
+        .comments
+
+    .headFix - head-fixation conditioning
+    .behaviour - behavioural testing
+
+    .anesthesia - information about anesthesia
+        .what
+        .time
+        .amount
+
+    .craniotomy - information about craniotomy
+        .area
+        .size
+        .pictures
+        .comments
+
+    .electrode - electrophy
+        .ID
+        .type
+        .use
+        .noiseLevel
+        .threshold
+        .angleToZenit
+        .dyeOnProbe
+        .brainFixed
+
+    .penetrationNum(<block index>)
+    .region(<block index>)
+    .tipDepth(<block index>)
+    .blockNum(<block index>)
+    .stimulusSet(<block index>)
+    .startTime(<block index>)
+    .audResponse(<block index>)
+    .bf(<block index>)
+    .lightPower(<block index>)
+    .videoEMG(<block index>)
+    .blockComments(<block index>)
+    
+    .customElectrode{<number of a basic electrode type>}
+        .type - custom electrode type (e.g. '4x4')
+        .sites(<row>, <column>) - site number (channel)
+        .spacing(<row>, <column>) - distance between a tip and a site
+    .nChannels - number of channels based on 'electrodeType' string
+    .sitesDepth(<block index>) - penetration depth of electrode sites
+
