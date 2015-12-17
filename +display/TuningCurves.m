@@ -35,7 +35,9 @@ else % Sorting by the prime stimulus
     % ----- spikeNum, spikeNumAvg
     trf_num = block.custom.TRFnum{BSL.curGroup}{BSL.curChannel};
     
-    plot(BSL.stimPrime.val, trf_num, 'Marker', '.', 'Parent', ax_spikeNum);
+    plot(BSL.stimPrime.val, trf_num(:,1:BSL.stimSecond.len/2), ...
+        BSL.stimPrime.val, trf_num(:,BSL.stimSecond.len/2+1:end), '--', ...
+        'Marker', '.', 'Parent', ax_spikeNum);
     legend(ax_spikeNum, num2str(BSL.stimSecond.val));
     xlabel(ax_spikeNum, BSL.stimPrime.label);
     
@@ -83,8 +85,8 @@ else % Sorting by the prime stimulus
     
     plot(BSL.stimPrime.val, onsetLat, 'Marker', '.', 'Parent', ax_onsetLatency);
     xlabel(ax_onsetLatency, BSL.stimPrime.label);
-%     
-%     plot(BSL.stimPrime.val, peak2, 'Marker', '.', 'Parent', ax_spontActivity);
-%     xlabel(ax_spontActivity, BSL.stimPrime.label);
+    
+    plot(BSL.stimPrime.val, block.spontRateMean{BSL.curGroup}{BSL.curChannel}, 'Marker', '.', 'Parent', ax_spontActivity);
+    xlabel(ax_spontActivity, BSL.stimPrime.label);
 end
 

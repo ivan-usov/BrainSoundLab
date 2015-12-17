@@ -51,7 +51,7 @@ for k = group
         trf_num = sum(cellfun(@length, all_spikes), 2)/length(block.selRep);
         
         sweepTime = block.calcSweepTime();
-        trf_rate = trf_num ./ sweepTime;
+        trf_rate = trf_num ./ sweepTime(ind);
         
         trf_num = reshape(trf_num, [stim_lev.len stim_rate.len]);
         trf_rate = reshape(trf_rate, [stim_lev.len stim_rate.len]);
@@ -107,7 +107,7 @@ for k = group
         
         peakLat_stim2 = zeros(1, stim_rate.len);
         peakAmp_stim2 = zeros(1, stim_rate.len);
-        onsetLat_stim2 = zeros(1, stim_lev.len);
+        onsetLat_stim2 = zeros(1, stim_rate.len);
         for m = 1:stim_rate.len
             spikes = all_spikes(1+(m-1)*stim_lev.len:m*stim_lev.len, :);
             n_all = histcounts(cell2mat(spikes(:)), linspace(0, 0.3, 301));
