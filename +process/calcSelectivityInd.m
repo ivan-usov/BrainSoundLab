@@ -61,10 +61,10 @@ for k = group
         down = trf_num(:, stim_rate.len/2:-1:1);
         up = trf_num(:, stim_rate.len/2+1:end);
         
-        meanVal = [mean(down); mean(up)];
-        maxVal = [max(down); max(up)];
+        meanVal = [mean(down, 2), mean(up, 2)];
+        maxVal = [max(down, [], 2), max(up, [], 2)];
         
-        block.custom.RSInum{k}{l} = (1-meanVal./maxVal)*stim_lev.len/(stim_lev.len-1);
+        block.custom.RSInum{k}{l} = (1-meanVal./maxVal)*(stim_rate.len/2)/((stim_rate.len)/2-1);
         
         % ----- rsi_r
         down = trf_rate(:, stim_rate.len/2:-1:1);
