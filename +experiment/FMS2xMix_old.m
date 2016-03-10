@@ -1,4 +1,6 @@
 classdef FMS2xMix_old < Block
+    % This experiment is similar to FMS2xMix except that here it reads only
+    % the first 504 trials
     
     properties (Transient)
         panels = {'SelectivityInd', 'TuningCurves'};
