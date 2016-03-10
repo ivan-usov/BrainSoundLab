@@ -220,6 +220,8 @@ BSL.selectSortByStim(str(val));
 display.Raster();
 display.updateProcArea();
 
+BSL.block.displayData();
+
 function Callback_timeProc(hObject, BSL)
 block = BSL.block;
 val = sscanf(get(hObject, 'String'), '%f', 1)/1000; % convert to seconds
