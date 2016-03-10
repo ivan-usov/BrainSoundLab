@@ -33,13 +33,13 @@ classdef BrainSoundLabData < handle
         % Experiment panel
         suppressRepSpikes = true;
         tolerance = 1e-5;
-        nRepSpikes = 5;
+        nRepSpikes = 8;
         
         % PSTH panel
         fixLim_psth = false;
         fixedMaxVal_psth
         nBins_psth = 200;
-        nStdDev_psth = 3;
+        nStdDev_psth = 2;
         
         % Red patches in the Raster and PSTH plots
         p1
