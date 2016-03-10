@@ -14,6 +14,7 @@ if ~isfield(block.custom, 'TRF')
     block.custom.BF = cell(1, block.nGroups);
     block.custom.Threshold = cell(1, block.nGroups);
     block.custom.CF = cell(1, block.nGroups);
+    block.custom.ThrCF = cell(1, block.nGroups);
     block.custom.BW10 = cell(1, block.nGroups);
     block.custom.BWat60 = cell(1, block.nGroups);
     
@@ -24,6 +25,7 @@ if ~isfield(block.custom, 'TRF')
         block.custom.BF{k} = zeros(1, block.nChannels);
         block.custom.Threshold{k} = zeros(1, block.nChannels);
         block.custom.CF{k} = zeros(1, block.nChannels);
+        block.custom.ThrCF{k} = zeros(1, block.nChannels);
         block.custom.BW10{k} = zeros(1, block.nChannels);
         block.custom.BWat60{k} = zeros(1, block.nChannels);
     end
@@ -61,64 +63,115 @@ for k = group
         end
         block.custom.TRF_clean{k}{l} = trf_clean;
         
-        % ----- dPrime
-        trf_signal = trf(trf_clean ~= 0);
-        trf_noise = trf(trf_clean == 0);
-        block.custom.dPrime{k}(l) = (mean(trf_signal) - mean(trf_noise)) / ...
-            sqrt((var(trf_signal) + var(trf_noise))/2);
         
-        % ----- Best frequency
-        [~, ind_bf] = max(sum(trf_clean, 1));
-        block.custom.BF{k}(l) = stim_fq.val(ind_bf);
         
-        % Step size in octaves
-        octSize = log2(stim_fq.val(end)/stim_fq.val(1))/(stim_fq.len-1);
         
-        ind_thr = find(trf_clean(:, ind_bf) == 0, 1, 'last') + 1;
-        if ~isempty(ind_thr) && ind_thr < stim_lev.len
-            % ----- Threshold
-            Thr = stim_lev.val(ind_thr);
-            block.custom.Thr{k}(l) = Thr;
-            
-            % ----- CF
-            cf_min = find(trf_clean(ind_thr, 1:ind_bf-1) == 0, 1, 'last') + 1;
-            if isempty(cf_min)
-                cf_min = 1;
-            end
-            cf_max = find(trf_clean(ind_thr, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
-            if isempty(cf_max)
-                cf_max = stim_fq.len;
-            end
-            [~, ind_cf] = max(trf_clean(ind_thr, cf_min:cf_max));
-            ind_cf = ind_cf + cf_min - 1;
-            block.custom.CF{k}(l) = stim_fq.val(ind_cf);
-            
-            % ----- BW10
-            ind10 = find(stim_lev.val == Thr+10);
-            val10min = find(trf_clean(ind10, 1:ind_bf-1) == 0, 1, 'last') + 1;
-            val10max = find(trf_clean(ind10, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
-            if isempty(val10min) || isempty(val10max)
-                block.custom.BW10{k}(l) = NaN;
-            else
-                block.custom.BW10{k}(l) = (val10max - val10min)*octSize;
-            end
-        else
+        
+        if isnan(trf_clean)==1
+            block.custom.dPrime{k}(l) = 0;
+            block.custom.BF{k}(l) = NaN;
             block.custom.Thr{k}(l) = NaN;
-            block.custom.CF{k}(l) = NaN;
             block.custom.BW10{k}(l) = NaN;
-        end
-        
-        % ----- BWat60
-        ind60 = find(stim_lev.val == 60);
-        val60min = find(trf_clean(ind60, 1:ind_bf-1) == 0, 1, 'last') + 1;
-        if isempty(val60min)
-            val60min = 1;
-        end
-        val60max = find(trf_clean(ind60, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
-        if isempty(val60min) || isempty(val60max)
+            block.custom.CF{k}(l) = NaN;
+            block.custom.ThrCF{k}(l) = NaN;
             block.custom.BWat60{k}(l) = NaN;
         else
-            block.custom.BWat60{k}(l) = (val60max - val60min)*octSize;
+            
+            % ----- dPrime
+            trf_signal = trf(trf_clean ~= 0);
+            trf_noise = trf(trf_clean == 0);
+            %what Ivan computed
+            %block.custom.dPrime{k}(l) = (mean(trf_signal) - mean(trf_noise)) / sqrt((var(trf_signal) + var(trf_noise))/2);
+            
+            % what WeImpale had - changed by TRB Dec 9 2015
+            trf_mask = trf_clean;
+            (trf_mask ~=0)== 1;
+            trfmaskupper = trf_mask;
+            trfmaskupper(1:round(size(trf_mask,1)/2),:) = 1;
+            trf_noise2 = trf(trfmaskupper < 1);
+            randTrialNum = 1000;
+            sampNum = 40;
+            noiseDistr = zeros(randTrialNum,1);
+            signalDistr = zeros(randTrialNum,1);
+            for i = 1:randTrialNum;
+                if (length(trf_signal)*0.5 > sampNum)
+                    signalDistr(i) = mean(trf_signal(ceil(rand(sampNum,1)*(length(trf_signal)-1))+1));
+                    noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
+                else
+                    signalDistr(i) = mean([trf_signal(ceil(rand(round(length(trf_signal)*0.5),1)*(length(trf_signal)-1))+1);...
+                        trf_noise2(ceil(rand(sampNum-round(length(trf_signal)*0.5),1)*(length(trf_noise2)-1))+1)]);
+                    noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
+                end;
+            end;
+            block.custom.dPrime{k}(l) = (mean(signalDistr)-mean(noiseDistr))*2/(std(signalDistr)+std(noiseDistr));
+            
+            
+            
+            % ----- Best frequency
+            [~, ind_bf] = max(sum(trf_clean, 1));
+            block.custom.BF{k}(l) = stim_fq.val(ind_bf);
+            
+            % Step size in octaves
+            octSize = log2(stim_fq.val(end)/stim_fq.val(1))/(stim_fq.len-1);
+            
+            %ind_thr = find(trf_clean(:, ind_bf) == 0, 1, 'last') + 1; %how it was done before December 8 - TRB
+            ind_thr = find(trf_clean(:, ind_bf) > 0, 1, 'first');
+            if ~isempty(ind_thr) && ind_thr < stim_lev.len
+                % ----- Threshold
+                Thr = stim_lev.val(ind_thr);
+                block.custom.Thr{k}(l) = Thr;
+                
+                % ----- CF
+                %             cf_min = find(trf_clean(ind_thr, 1:ind_bf-1) == 0, 1, 'last') + 1;
+                %             if isempty(cf_min)
+                %                 cf_min = 1;
+                %             end
+                %             cf_max = find(trf_clean(ind_thr, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
+                %             if isempty(cf_max)
+                %                 cf_max = stim_fq.len;
+                %             end
+                %             [~, ind_cf] = max(trf_clean(ind_thr, cf_min:cf_max));
+                %             ind_cf = ind_cf + cf_min - 1;
+                %             block.custom.CF{k}(l) = stim_fq.val(ind_cf);
+                
+                % ----- BW10
+                ind10 = find(stim_lev.val == Thr+10);
+                val10min = find(trf_clean(ind10, 1:ind_bf-1) == 0, 1, 'last') + 1;
+                val10max = find(trf_clean(ind10, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
+                if isempty(val10min) || isempty(val10max)
+                    block.custom.BW10{k}(l) = NaN;
+                else
+                    block.custom.BW10{k}(l) = (val10max - val10min)*octSize;
+                end
+            else
+                block.custom.Thr{k}(l) = NaN;
+                block.custom.BW10{k}(l) = NaN;
+                %      block.custom.CF{k}(l) = NaN;
+            end
+            
+            % ----- CF
+            ind_ThrCF = find(sum(trf_clean,2),1, 'first');
+            if isempty(ind_ThrCF)
+                block.custom.CF{k}(l) = NaN;
+                block.custom.ThrCF{k}(l) = NaN;
+            else
+                block.custom.ThrCF{k}(l)=stim_lev.val(ind_ThrCF);
+                ind_cf=min(find(trf_clean(ind_ThrCF,:)==max(trf_clean(ind_ThrCF,:)),2));
+                block.custom.CF{k}(l) = stim_fq.val(ind_cf);
+            end
+            
+            % ----- BWat60
+            ind60 = find(stim_lev.val == 60);
+            val60min = find(trf_clean(ind60, 1:ind_bf-1) == 0, 1, 'last') + 1;
+            if isempty(val60min)
+                val60min = 1;
+            end
+            val60max = find(trf_clean(ind60, ind_bf+1:end) == 0, 1, 'first') + ind_bf - 1;
+            if isempty(val60min) || isempty(val60max)
+                block.custom.BWat60{k}(l) = NaN;
+            else
+                block.custom.BWat60{k}(l) = (val60max - val60min)*octSize;
+            end
         end
     end
 end

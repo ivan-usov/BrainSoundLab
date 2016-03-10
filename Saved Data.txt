@@ -80,6 +80,8 @@ block
         .TRFnum{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
         .TRFnum_max{<group number>}(<electrode channel>)
         .TRFrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
+        .SpontTRFrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
+        .stdSpontTRFrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
         .TRFrate_max{<group number>}(<electrode channel>)
         .peakLat_stim1{<group number>}{<electrode channel>}(stim(1).len) - peak latency of spikes grouped for each stim(1) value
         .peakAmp_stim1{<group number>}{<electrode channel>}(stim(1).len) - peak amplitude of spikes grouped for each stim(1) value
