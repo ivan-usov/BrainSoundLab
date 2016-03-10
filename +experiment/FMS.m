@@ -27,6 +27,18 @@ classdef FMS < Block
             tMax = NaN;
         end
         
+        function sweepTime = calcSweepTime(this)
+            % Calculate the sweepTime based on the maximum and minimum frequencies
+            
+            % Border frequencies
+            fq_min = 2000;
+            fq_max = 48000;
+            
+            sweepOct = abs(log2(fq_max/fq_min));
+            sweepTime = abs(sweepOct ./ this.stimConditions(:, 2))/1000; % seconds
+            sweepTime = sweepTime + 0.015; % FMS increased window analysis
+        end
+        
         function spikes = getSpikeTimings(this, t_min, t_max, group, chan)
             if isnan(t_min) || isnan(t_max) % get spikes for the timeProcRange
                 % Find all spikes in a time window according to the sweepTime
