@@ -31,19 +31,26 @@ if strcmp(BSL.stimPrime.label, 'Number')
     cla(ax_onsetLatency);
     cla(ax_spontActivity);
     
-else % Sorting by the prime stimulus
+else % Sorting by the prime or second stimulus
     % ----- spikeNum, spikeNumAvg
     trf_num = block.custom.TRFnum{BSL.curGroup}{BSL.curChannel};
-    
-    plot(BSL.stimPrime.val, trf_num(:,1:BSL.stimSecond.len/2), ...
-        BSL.stimPrime.val, trf_num(:,BSL.stimSecond.len/2+1:end), '--', ...
-        'Marker', '.', 'Parent', ax_spikeNum);
-    legend(ax_spikeNum, num2str(BSL.stimSecond.val));
-    xlabel(ax_spikeNum, BSL.stimPrime.label);
-    
+    linestyle = ['k-.' 'g-.' 'b-.' 'r-.' 'c-.' 'y-.' 'y--.''c--.' 'r--.' 'b--.' 'g--.' 'k--.'];
+   
     if BSL.stimPrime.ind == stim_lev.ind
+        plot(BSL.stimPrime.val, trf_num(:,1:BSL.stimSecond.len/2),...
+        BSL.stimPrime.val, trf_num(:,BSL.stimSecond.len/2+1:end), '--', ...
+        'Marker', '+', 'Parent', ax_spikeNum);
+       % plot(BSL.stimPrime.val, trf_num, linestyle, 'Parent', ax_spikeNum);
+        legend(ax_spikeNum, num2str(BSL.stimSecond.val));
+        xlabel(ax_spikeNum, BSL.stimPrime.label);
+        
         trf_num_avg = mean(trf_num, 2);
     else
+        
+        plot(BSL.stimPrime.val, trf_num, 'Marker', '.', 'Parent', ax_spikeNum);
+        legend(ax_spikeNum, num2str(BSL.stimSecond.val));
+        xlabel(ax_spikeNum, BSL.stimPrime.label);
+        
         trf_num_avg = mean(trf_num, 1);
     end
     
@@ -53,19 +60,33 @@ else % Sorting by the prime stimulus
     % ----- ax_spikeRate, spikeRateAvg
     trf_rate = block.custom.TRFrate{BSL.curGroup}{BSL.curChannel};
     
-    plot(BSL.stimPrime.val, trf_rate, 'Marker', '.', 'Parent', ax_spikeRate);
-    xlabel(ax_spikeRate, BSL.stimPrime.label);
+    %plot(BSL.stimPrime.val, trf_rate, 'Marker', '.', 'Parent', ax_spikeRate);
+    %plot(BSL.stimPrime.val, trf_rate(:,1:BSL.stimSecond.len/2), ...
+    %    BSL.stimPrime.val, trf_rate(:,BSL.stimSecond.len/2+1:end), '--', ...
+    %    'Marker', '.', 'Parent', ax_spikeRate); %to have down sweeps
+    %    dashed
     
     if BSL.stimPrime.ind == stim_lev.ind
+        plot(BSL.stimPrime.val, trf_rate(:,1:BSL.stimSecond.len/2),...
+        BSL.stimPrime.val, trf_rate(:,BSL.stimSecond.len/2+1:end), '--', ...
+        'Marker', '+', 'Parent', ax_spikeRate);
+        %legend(ax_spikeRate, num2str(BSL.stimSecond.val));
+        xlabel(ax_spikeRate, BSL.stimPrime.label);
+        
         trf_rate_avg = mean(trf_rate, 2);
     else
+        plot(BSL.stimPrime.val, trf_rate, 'Marker', '.', 'Parent', ax_spikeRate);
+        %legend(ax_spikeRate, num2str(BSL.stimSecond.val));
+        xlabel(ax_spikeRate, BSL.stimPrime.label);
+        
         trf_rate_avg = mean(trf_rate, 1);
     end
     
     plot(BSL.stimPrime.val, trf_rate_avg, 'Marker', '.', 'Parent', ax_spikeRateAvg);
     xlabel(ax_spikeRateAvg, BSL.stimPrime.label);
     
-    % ----- peakLatencyAvg, peakAmpAvg, onsetLatency
+    % ----- peakLatencyAvg, peakAmpAvg, onsetLatency, spontspikekRate
+    Sponttrf_rate = block.custom.SpontTRFrate{BSL.curGroup}{BSL.curChannel};
     
     if BSL.stimPrime.ind == stim_lev.ind
         peakLat = block.custom.peakLat_stim1{BSL.curGroup}{BSL.curChannel};
@@ -85,8 +106,21 @@ else % Sorting by the prime stimulus
     
     plot(BSL.stimPrime.val, onsetLat, 'Marker', '.', 'Parent', ax_onsetLatency);
     xlabel(ax_onsetLatency, BSL.stimPrime.label);
-    
-    plot(BSL.stimPrime.val, block.spontRateMean{BSL.curGroup}{BSL.curChannel}, 'Marker', '.', 'Parent', ax_spontActivity);
-    xlabel(ax_spontActivity, BSL.stimPrime.label);
+     
+    if BSL.stimPrime.ind == stim_lev.ind
+        plot(BSL.stimPrime.val, Sponttrf_rate(:,1:BSL.stimSecond.len/2),...
+        BSL.stimPrime.val, Sponttrf_rate(:,BSL.stimSecond.len/2+1:end), '--', ...
+        'Marker', '+', 'Parent', ax_spontActivity);
+        %legend(ax_spontActivity, num2str(BSL.stimSecond.val));
+        xlabel(ax_spontActivity, BSL.stimPrime.label);
+    else
+        plot(BSL.stimPrime.val, Sponttrf_rate, 'Marker', '.', 'Parent', ax_spontActivity);
+        %legend(ax_spontActivity, num2str(BSL.stimSecond.val));
+        xlabel(ax_spontActivity, BSL.stimPrime.label);
+
+    end
+    % plot(BSL.stimPrime.val, Sponttrf_rate, 'Marker', '.', 'Parent', ax_spontActivity);
+    % xlabel(ax_spontActivity, BSL.stimPrime.label);
+end
 end
 

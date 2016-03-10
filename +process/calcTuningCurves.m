@@ -11,6 +11,8 @@ if ~isfield(block.custom, 'TRFnum')
     block.custom.TRFnum = cell(1, block.nGroups);
     block.custom.TRFnum_max = cell(1, block.nGroups);
     block.custom.TRFrate = cell(1, block.nGroups);
+    block.custom.SpontTRFrate = cell(1, block.nGroups);
+    block.custom.stdSpontTRFrate = cell(1, block.nGroups);
     block.custom.TRFrate_max = cell(1, block.nGroups);
     
     block.custom.peakLat_stim1 = cell(1, block.nGroups);
@@ -24,6 +26,8 @@ if ~isfield(block.custom, 'TRFnum')
         block.custom.TRFnum{k} = cell(1, block.nChannels);
         block.custom.TRFnum_max{k} = zeros(1, block.nChannels);
         block.custom.TRFrate{k} = cell(1, block.nChannels);
+        block.custom.SpontTRFrate{k} = cell(1, block.nChannels);
+        block.custom.stdSpontTRFrate{k} = cell(1, block.nChannels);
         block.custom.TRFrate_max{k} = zeros(1, block.nChannels);
         
         block.custom.peakLat_stim1{k} = cell(1, block.nChannels);
@@ -40,25 +44,36 @@ stim_rate = block.stim(2);
 
 for k = group
     all_group_spikes = block.spikesTimeProc{k};
+    all_group_Spontspikes = block.SpontspikesTimeProc{k}; %added by TRB Dec 17 2015
     
     for l = chan
         % Sort conditions
         [~, ind] = sortrows(block.stimConditions, [stim_rate.ind stim_lev.ind]);
         
-        % Calculate TRF number and rate
+        sweepTime = block.calcSweepTime();
         all_spikes = all_group_spikes{l}(ind, :); %TODO: block.selRep
+        all_Spontspikes = all_group_Spontspikes{l}(ind, :);
+        sweepTime_ordered = sweepTime(ind, :); %added by TRB Dec 16
+
+        
+        % Calculate Sweep TRF number and rate
         
         trf_num = sum(cellfun(@length, all_spikes), 2)/length(block.selRep);
+        trf_rate = trf_num ./ sweepTime_ordered;
+        Sponttrf_rate = sum(cellfun(@length, all_Spontspikes), 2)/length(block.selRep)/0.1;
+            %0.1 is the duration of the window for the calculation of spont activity  
+        stdSponttrf_rate = std(cellfun(@length, all_Spontspikes),0,2)/0.1;
         
-        sweepTime = block.calcSweepTime();
-        trf_rate = trf_num ./ sweepTime(ind);
-        
-        trf_num = reshape(trf_num, [stim_lev.len stim_rate.len]);
+        trf_num = reshape(trf_num, [stim_lev.len stim_rate.len]); 
         trf_rate = reshape(trf_rate, [stim_lev.len stim_rate.len]);
+        Sponttrf_rate = reshape(Sponttrf_rate, [stim_lev.len stim_rate.len]);
+        stdSponttrf_rate = reshape(stdSponttrf_rate, [stim_lev.len stim_rate.len]);
         
         block.custom.TRFnum{k}{l} = trf_num;
         block.custom.TRFnum_max{k}(l) = max(max(trf_num));
         block.custom.TRFrate{k}{l} = trf_rate;
+        block.custom.SpontTRFrate{k}{l} = Sponttrf_rate;
+        block.custom.stdSpontTRFrate{k}{l} = stdSponttrf_rate;
         block.custom.TRFrate_max{k}(l) = max(max(trf_rate));
         
         % -----
@@ -68,11 +83,12 @@ for k = group
         mSpont = block.spontRateMean{k}(l);
         sSpont = block.spontRateStd{k}(l);
         
-        % Reorder spikes for the first stimulus
+        % Reorder spikes for the first stimulus (for FMS the first stimulus
+        % is sound level)
         [~, ind] = sortrows(block.stimConditions, [stim_lev.ind stim_rate.ind]);
         all_spikes = all_group_spikes{l}(ind, :); % TODO: block.selRep
         
-        % Calculate peak amplitude and latency for each stimPrime value
+        % Calculate peak amplitude and latency for each first stim (ie sound level) value
         peakLat_stim1 = zeros(1, stim_lev.len);
         peakAmp_stim1 = zeros(1, stim_lev.len);
         onsetLat_stim1 = zeros(1, stim_lev.len);
@@ -101,13 +117,15 @@ for k = group
         block.custom.peakAmp_stim1{k}{l} = peakAmp_stim1;
         block.custom.onsetLat_stim1{k}{l} = onsetLat_stim1;
         
-        % Reorder spikes for the second stimulus
+        % Reorder spikes for the second stimulus (in the case of FMS the
+        % second stimulus is the sweep rate)
         [~, ind] = sortrows(block.stimConditions, [stim_rate.ind stim_lev.ind]);
         all_spikes = all_group_spikes{l}(ind, :); % TODO: block.selRep
         
+        % Calculate peak amplitude and latency for each second stim (ie sweeprate) value
         peakLat_stim2 = zeros(1, stim_rate.len);
         peakAmp_stim2 = zeros(1, stim_rate.len);
-        onsetLat_stim2 = zeros(1, stim_rate.len);
+        onsetLat_stim2 = zeros(1, stim_lev.len);
         for m = 1:stim_rate.len
             spikes = all_spikes(1+(m-1)*stim_lev.len:m*stim_lev.len, :);
             n_all = histcounts(cell2mat(spikes(:)), linspace(0, 0.3, 301));
