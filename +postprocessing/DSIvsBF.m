@@ -1,15 +1,19 @@
 % Plot data element from blockType2 vs data element from blockType1 for
 % each channel in the first group
-function DSIvsBF()
+function [xdata, ydata] = DSIvsBF()
 blockType1 = 'experiment.ToneFine';
 blockType2 = 'experiment.FMS';
 
     function isValid = validateExperiment(labbook)
         isValid = 0;
         
-        % if labbook.mouse.age < 35
-        %     return
-        % end
+%        if ~strcmp(labbook.mouse.age, '7 weeks') % strings are not equal
+%             return
+%         end
+%         
+%         if labbook.mouse.weight ~= 20
+%             return
+%         end
         
         isValid = 1;
     end
