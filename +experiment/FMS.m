@@ -10,7 +10,7 @@ classdef FMS < Block
             this.stim(1).label = 'Level, dB';
             
             stimData{2} = source.rate.data;
-            this.stim(2).label = 'Frequency rate, oct/s';
+            this.stim(2).label = 'Sweep rate, oct/s';
         end
     end
     
