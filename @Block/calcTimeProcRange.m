@@ -28,8 +28,8 @@ sn_all = filtfilt(kernel, 1, n_all);
 mSpont = this.spontRateMean{group}(chan);
 sSpont = this.spontRateStd{group}(chan);
 
-% Peak is supposed to be between 0s and 0.5s
-ind = sn_all(200:700) >= mSpont + nStdDev*sSpont;
+% Peak is supposed to be between 0s and 0.25s
+ind = sn_all(200:450) >= mSpont + nStdDev*sSpont;
 tMin = (find(ind, 1, 'first')-1)/1000;
 tMax = (find(ind, 1, 'last')-1)/1000;
 
