@@ -22,11 +22,8 @@ if strcmp(token, 'all')
     postStimActivity(this);
     timeProcValues(this, group, chan);
     spikesTimeProc(this, group, chan);
+    spontSpikesTimeProc(this, group, chan);
     peakParameters(this, group, chan);
-    
-    % TODO: optimize
-%     display.Raster();
-%     display.PSTH();
     
     this.customAnalysis(group, chan);
     
@@ -34,17 +31,11 @@ elseif strcmp(token, 'timeRasterMod')
     % Change of timeRasterMin or timeRasterMax in the raster panel
     spikesTimeRaster(this);
     
-    % TODO: optimize
-%     display.Raster();
-%     display.PSTH();
-    
 elseif strcmp(token, 'timeProcMod')
     % Change of timeProcMin or timeProcMax in the raster panel
     spikesTimeProc(this, group, chan);
+    spontSpikesTimeProc(this, group, chan);
     peakParameters(this, group, chan);
-    
-    % TODO: optimize
-%     display.updateProcArea();
     
     this.customAnalysis(group, chan);
     
@@ -52,10 +43,8 @@ elseif strcmp(token, 'autoProcRange')
     % Auto range for timeProcMin or timeProcMax for a certain channel
     timeProcValues(this, group, chan);
     spikesTimeProc(this, group, chan);
+    spontSpikesTimeProc(this, group, chan);
     peakParameters(this, group, chan);
-    
-    % TODO: optimize
-%     display.updateProcArea();
     
     this.customAnalysis(group, chan);
 end
@@ -73,6 +62,7 @@ for k = 1:this.nGroups
             this.timeRasterMin, this.timeRasterMax, k, l);
     end
 end
+
 
 function spontActivity(this)
 % Calculate the spontaneous activity rate (between -0.15 and -0.05 sec)
@@ -109,6 +99,14 @@ for k = group
         t_min = this.timeProcMin{k}(l);
         t_max = this.timeProcMax{k}(l);
         this.spikesTimeProc{k}{l} = this.getSpikeTimings(t_min, t_max, k, l);
+    end
+end
+
+function spontSpikesTimeProc(this, group, chan)
+% Spike timings within the time window -0.15 to -0.05s
+for k = group
+    for l = chan
+        this.spontSpikesTimeProc{k}{l} = this.getSpikeTimings(-0.15, -0.05, k, l);
     end
 end
 

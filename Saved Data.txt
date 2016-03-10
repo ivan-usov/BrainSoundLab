@@ -52,7 +52,8 @@ block
     
     .spikesTimeRaster{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings between 'timeRasterMin{<group number>}(<electrode channel>)' and 'timeRasterMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
     .spikesTimeProc{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings in the 'timeProcMin{<group number>}(<electrode channel>)' and 'timeProcMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
-    
+    .spontSpikesTimeProc{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings in the -.15 and -0.05 time window sorted according to 'stimConditions'
+
     .spontRateMean{<group number>}(<electrode channel>) - average of the spontaneous spike rate activity (spikes/s)
     .spontRateStd{<group number>}(<electrode channel>) - standard deviation of the spontaneous spike rate activity (spikes/s)
     .postStimRateMean{<group number>}(<electrode channel>) - average of the post stimuli spike rate activity (spikes/s)

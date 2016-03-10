@@ -43,6 +43,7 @@ classdef Block < handle
         
         spikesTimeRaster
         spikesTimeProc
+        spontSpikesTimeProc
         
         spontRateMean
         spontRateStd
