@@ -5,25 +5,25 @@ block = BSL.block;
 stim_lev = block.stim(1);
 stim_rate = block.stim(2);
 
-% ----- dsi_n
+% ----- dsi
 ax = findobj('Tag', 'ax_dsi_n');
-result = block.custom.DSInum{BSL.curGroup}{BSL.curChannel};
+result = block.custom.DSIwspont{BSL.curGroup}{BSL.curChannel};
 plot(stim_rate.val(stim_rate.len/2+1:end), result, 'Marker', '.', 'Parent', ax);
 legend(ax, num2str(stim_lev.val));
 
-% ----- dsi_r
+% ----- dsi witout spont activity
 ax = findobj('Tag', 'ax_dsi_r');
-result = block.custom.DSIrate{BSL.curGroup}{BSL.curChannel};
+result = block.custom.DSIwospont{BSL.curGroup}{BSL.curChannel};
 plot(stim_rate.val(stim_rate.len/2+1:end), result, 'Marker', '.', 'Parent', ax);
 
-% ----- lsi_n
+% ----- lsi
 ax = findobj('Tag', 'ax_lsi_n');
-result = block.custom.LSInum{BSL.curGroup}{BSL.curChannel};
+result = block.custom.LSIwspont{BSL.curGroup}{BSL.curChannel};
 plot(stim_rate.val, result, 'Marker', '.', 'Parent', ax);
 
-% ----- lsi_r
+% ----- lsi without spont activity
 ax = findobj('Tag', 'ax_lsi_r');
-result = block.custom.LSIrate{BSL.curGroup}{BSL.curChannel};
+result = block.custom.LSIwospont{BSL.curGroup}{BSL.curChannel};
 plot(stim_rate.val, result, 'Marker', '.', 'Parent', ax);
 
 % ----- rsi_n
@@ -31,7 +31,7 @@ ax = findobj('Tag', 'ax_rsi_n');
 result = block.custom.RSInum{BSL.curGroup}{BSL.curChannel};
 plot([-1, 1], result, 'Marker', '.', 'Parent', ax);
 set(ax, 'XTick', [-1, 1], 'XTickLabel', {'Down', 'Up'});
-legend(ax, num2str(stim_rate.val(stim_rate.len/2+1:end)));
+legend(ax, num2str(stim_lev.val));
 
 % ----- rsi_r
 ax = findobj('Tag', 'ax_rsi_r');

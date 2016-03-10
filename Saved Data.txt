@@ -53,7 +53,7 @@ block
     .spikesTimeRaster{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings between 'timeRasterMin{<group number>}(<electrode channel>)' and 'timeRasterMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
     .spikesTimeProc{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings in the 'timeProcMin{<group number>}(<electrode channel>)' and 'timeProcMax{<group number>}(<electrode channel>)' time window sorted according to 'stimConditions'
     .spontSpikesTimeProc{<group number>}{<electrode channel>}{nTrials, selRep} - array of spike timings in the -.15 and -0.05 time window sorted according to 'stimConditions'
-
+    
     .spontRateMean{<group number>}(<electrode channel>) - average of the spontaneous spike rate activity (spikes/s)
     .spontRateStd{<group number>}(<electrode channel>) - standard deviation of the spontaneous spike rate activity (spikes/s)
     .postStimRateMean{<group number>}(<electrode channel>) - average of the post stimuli spike rate activity (spikes/s)
@@ -76,7 +76,7 @@ block
         .BW10{<group number>}(<electrode channel>) - bandwidth at 10 dB above Threshold (oct)
         .BWat60{<group number>}(<electrode channel>) - bandwidth at 60 dB level (oct)
 
-	calcTuningCurves ('FMS' and 'FMS2xMix')
+	calcTuningCurves ('FMS', 'AMS' and 'FMS2xMix')
         .TRFnum{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
         .TRFnum_max{<group number>}(<electrode channel>)
         .TRFrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len)
@@ -88,11 +88,11 @@ block
         .peakAmp_stim2{<group number>}{<electrode channel>}(stim(2).len) - peak amplitude of spikes grouped for each stim(2) value
         .onsetLat_stim2{<group number>}{<electrode channel>}(stim(2).len) - onset latency of spikes grouped for each stim(2) value
 
-    calcSelectivityInd ('FMS' and 'FMS2xMix')
-        .DSInum{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (spike number)
-        .DSIrate{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (spike rate)
-        .LSInum{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (spike number)
-        .LSIrate{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (spike rate)
+    calcSelectivityInd ('FMS', 'AMS' and 'FMS2xMix')
+        .DSIwspont{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (raw value)
+        .DSIwospont{<group number>}{<electrode channel>}(stim(1).len, stim(2).len/2) - direction selectivity indexes (spont activity has been retracted)
+        .LSIwspont{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (raw value)
+        .LSIwospont{<group number>}{<electrode channel>}(1, stim(2).len) - level selectivity indexes (sponta activity has been subtracted)
         .RSInum{<group number>}{<electrode channel>}(2, stim(2).len/2) - frequency sweep rate selectivity indexes (spike number)
         .RSIrate{<group number>}{<electrode channel>}(2, stim(2).len/2) - frequency sweep rate selectivity indexes (spike rate)
 
