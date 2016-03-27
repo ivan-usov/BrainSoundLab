@@ -13,6 +13,9 @@ classdef DeviantTone < Block
         function filtStimCond = getStimuliFilteringConditions(this, source)
             filtStimCond{1} = source.freq.data/1000; % convert to kHz
             this.filtStim(1).label = 'Frequency, kHz';
+            
+            % Force the number of repetitions to 1
+            this.nTrials = length(filtStimCond{1});
         end
     end
     
