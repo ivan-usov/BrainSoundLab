@@ -84,8 +84,10 @@ else
         'Value', 1);
 end
 
+stimLabels = {this.block.stim.label};
+stimLabels = stimLabels(~cellfun(@isempty, stimLabels));
 set(findobj('Tag', 'pm_sortBy_raster'), ...
-    'String', {this.block.stim.label, 'Number'}, ...
+    'String', [stimLabels, {'Number'}], ...
     'Value', 1);
 
 % Update the TRFLaser panel
