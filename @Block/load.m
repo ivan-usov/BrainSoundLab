@@ -21,7 +21,7 @@ end
 % Take epocs.coun.data as a reference for a number of trials (every block has it)
 this.nTotal = length(epocs.coun.data);
 
-% Assign the stimuli conditions (there must be 2 different stimuli in total)
+%--- Assign the stimuli conditions (there must be 2 different stimuli in total)
 stimData = this.getStimuliConditions(epocs);
 if length(stimData) > 2
     error('Block:load', 'Too many stimuli conditions (maximum 2)');
@@ -36,7 +36,10 @@ for k = 1:2
     this.stim(k).ind = k;
 end
 
-% Assign the grouping conditions
+% Number of trials per repetition and per group
+this.nTrials = prod([this.stim.len]);
+
+%--- Assign the grouping conditions
 groupData = this.getGroupingConditions(epocs);
 for k = 1:length(groupData)
     this.group(k).val = unique(groupData{k});
@@ -44,7 +47,10 @@ for k = 1:length(groupData)
     this.group(k).sel = 1;
 end
 
-% Assign the stimuli filtering conditions
+% Number of groups
+this.nGroups = prod([this.group.len]);
+
+%--- Assign the stimuli filtering conditions
 filtStimData = this.getStimuliFilteringConditions(epocs);
 for k = 1:length(filtStimData)
     this.filtStim(k).val = unique(filtStimData{k});
@@ -52,17 +58,13 @@ for k = 1:length(filtStimData)
     this.filtStim(k).sel = 1;
 end
 
-% Assign the spikes filtering conditions
+%--- Assign the spikes filtering conditions
 filtSpikesData = this.getSpikesFilteringConditions(epocs);
 for k = 1:length(filtSpikesData)
     this.filtSpikes(k).val = unique(filtSpikesData{k});
     this.filtSpikes(k).len = length(this.filtSpikes(k).val);
     this.filtSpikes(k).sel = 1;
 end
-
-% A number of trials per repetition in each group and a number of groups
-this.nTrials = prod([this.stim.len]);
-this.nGroups = prod([this.group.len]);
 
 % Number of repetitions (only stimuli and groups affect it, filters do not)
 this.nRep = this.nTotal/this.nTrials/this.nGroups;
