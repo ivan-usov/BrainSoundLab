@@ -19,6 +19,16 @@ end
 spikes = arrayfun(@spike_count, this.stimTimings(:, this.selRep, group), ...
     'UniformOutput', false);
 
+% Apply stimuli timing filters
+if ~isempty(this.filtStim)
+    ind = true(this.nTrials, 1);
+    for k = 1:length(this.filtStim)
+        allVal = this.filtStim(k).val;
+        ind = ind & (this.filtStim(k).map == allVal(this.filtStim(k).sel));
+    end
+    spikes(~ind) = {[]};
+end
+
     function spikes = spike_count(t0)
         ind1 = find(spikeTimings > t0 + t_min, 1, 'first');
         ind2 = find(spikeTimings < t0 + t_max, 1, 'last');

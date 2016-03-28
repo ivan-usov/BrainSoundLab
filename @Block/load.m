@@ -21,7 +21,7 @@ end
 % Take epocs.coun.data as a reference for a number of trials (every block has it)
 this.nTotal = length(epocs.coun.data);
 
-% Assign the stimuli conditions (there must be 2 different stimuli in total)
+%--- Assign the stimuli conditions (there must be 2 different stimuli in total)
 stimData = this.getStimuliConditions(epocs);
 if length(stimData) > 2
     error('Block:load', 'Too many stimuli conditions (maximum 2)');
@@ -36,7 +36,10 @@ for k = 1:2
     this.stim(k).ind = k;
 end
 
-% Assign the grouping conditions
+% Number of trials per repetition and per group
+this.nTrials = prod([this.stim.len]);
+
+%--- Assign the grouping conditions
 groupData = this.getGroupingConditions(epocs);
 for k = 1:length(groupData)
     this.group(k).val = unique(groupData{k});
@@ -44,7 +47,10 @@ for k = 1:length(groupData)
     this.group(k).sel = 1;
 end
 
-% Assign the stimuli filtering conditions
+% Number of groups
+this.nGroups = prod([this.group.len]);
+
+%--- Assign the stimuli filtering conditions
 filtStimData = this.getStimuliFilteringConditions(epocs);
 for k = 1:length(filtStimData)
     this.filtStim(k).val = unique(filtStimData{k});
@@ -52,7 +58,7 @@ for k = 1:length(filtStimData)
     this.filtStim(k).sel = 1;
 end
 
-% Assign the spikes filtering conditions
+%--- Assign the spikes filtering conditions
 filtSpikesData = this.getSpikesFilteringConditions(epocs);
 for k = 1:length(filtSpikesData)
     this.filtSpikes(k).val = unique(filtSpikesData{k});
@@ -60,19 +66,15 @@ for k = 1:length(filtSpikesData)
     this.filtSpikes(k).sel = 1;
 end
 
-% A number of trials per repetition in each group and a number of groups
-this.nTrials = prod([this.stim.len]);
-this.nGroups = prod([this.group.len]);
-
 % Number of repetitions (only stimuli and groups affect it, filters do not)
 this.nRep = this.nTotal/this.nTrials/this.nGroups;
 
-% Organize stimuli timings and conditions and filtering conditions
+% Organize stimuli timings and conditions, and filtering conditions
 all_stimCond = [stimData{:}];
 all_onset = epocs.coun.onset;
 this.stimTimings = zeros(this.nTrials, this.nRep, this.nGroups);
 for k = 1:this.nGroups
-    % Calculate indexes related to k'th group
+    % Calculate indexes related to the k'th group
     ind = true(this.nTotal, 1);
     dim = [this.group.len];
     J = k;
@@ -86,17 +88,18 @@ for k = 1:this.nGroups
     stimCond = all_stimCond(ind, :);
     onset = all_onset(ind);
     
-%     this.filtStim(this.curGroup).map = zeros(this.nTrials, this.nRep, this.nGroups);
+    this.filtStim(k).map = zeros(this.nTrials, this.nRep, this.nGroups);
+    
     for l = 1:this.nRep
         ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
         ind_ord = ind_rep(ind_sort);
         this.stimTimings(:, l, k) = onset(ind_ord);
         
-%         % Organize stimuli filters
-%         for m = 1:length(this.filtStim)
-%             this.filtStim(m).map(:, l, k) = filtStimData{m}(ind_ord);
-%         end
+        % Organize stimuli filters
+        for m = 1:length(this.filtStim)
+            this.filtStim(m).map(:, l, k) = filtStimData{m}(ind_ord);
+        end
         
         % Once save stimuli conditions
         if l == 1 && k == 1
