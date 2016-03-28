@@ -69,12 +69,12 @@ end
 % Number of repetitions (only stimuli and groups affect it, filters do not)
 this.nRep = this.nTotal/this.nTrials/this.nGroups;
 
-% Organize stimuli timings and conditions and filtering conditions
+% Organize stimuli timings and conditions, and filtering conditions
 all_stimCond = [stimData{:}];
 all_onset = epocs.coun.onset;
 this.stimTimings = zeros(this.nTrials, this.nRep, this.nGroups);
 for k = 1:this.nGroups
-    % Calculate indexes related to k'th group
+    % Calculate indexes related to the k'th group
     ind = true(this.nTotal, 1);
     dim = [this.group.len];
     J = k;
@@ -88,17 +88,18 @@ for k = 1:this.nGroups
     stimCond = all_stimCond(ind, :);
     onset = all_onset(ind);
     
-%     this.filtStim(this.curGroup).map = zeros(this.nTrials, this.nRep, this.nGroups);
+    this.filtStim(k).map = zeros(this.nTrials, this.nRep, this.nGroups);
+    
     for l = 1:this.nRep
         ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
         ind_ord = ind_rep(ind_sort);
         this.stimTimings(:, l, k) = onset(ind_ord);
         
-%         % Organize stimuli filters
-%         for m = 1:length(this.filtStim)
-%             this.filtStim(m).map(:, l, k) = filtStimData{m}(ind_ord);
-%         end
+        % Organize stimuli filters
+        for m = 1:length(this.filtStim)
+            this.filtStim(m).map(:, l, k) = filtStimData{m}(ind_ord);
+        end
         
         % Once save stimuli conditions
         if l == 1 && k == 1
