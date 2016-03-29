@@ -88,8 +88,6 @@ for k = 1:this.nGroups
     stimCond = all_stimCond(ind, :);
     onset = all_onset(ind);
     
-    this.filtStim(k).map = zeros(this.nTrials, this.nRep, this.nGroups);
-    
     for l = 1:this.nRep
         ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
