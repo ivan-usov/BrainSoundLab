@@ -44,7 +44,7 @@ stim_rate = block.stim(2);
 
 for k = group
     all_group_spikes = block.spikesTimeProc{k};
-    all_group_Spontspikes = block.SpontspikesTimeProc{k}; %added by TRB Dec 17 2015
+    all_group_spontSpikes = block.spontSpikesTimeProc{k}; %added by TRB Dec 17 2015
     
     for l = chan
         % Sort conditions
@@ -52,7 +52,7 @@ for k = group
         
         sweepTime = block.calcSweepTime();
         all_spikes = all_group_spikes{l}(ind, :); %TODO: block.selRep
-        all_Spontspikes = all_group_Spontspikes{l}(ind, :);
+        all_spontSpikes = all_group_spontSpikes{l}(ind, :);
         sweepTime_ordered = sweepTime(ind, :); %added by TRB Dec 16
 
         
@@ -60,20 +60,20 @@ for k = group
         
         trf_num = sum(cellfun(@length, all_spikes), 2)/length(block.selRep);
         trf_rate = trf_num ./ sweepTime_ordered;
-        Sponttrf_rate = sum(cellfun(@length, all_Spontspikes), 2)/length(block.selRep)/0.1;
+        spontTRF_rate = sum(cellfun(@length, all_spontSpikes), 2)/length(block.selRep)/0.1;
             %0.1 is the duration of the window for the calculation of spont activity  
-        stdSponttrf_rate = std(cellfun(@length, all_Spontspikes),0,2)/0.1;
+        stdSpontTRF_rate = std(cellfun(@length, all_spontSpikes),0,2)/0.1;
         
         trf_num = reshape(trf_num, [stim_lev.len stim_rate.len]); 
         trf_rate = reshape(trf_rate, [stim_lev.len stim_rate.len]);
-        Sponttrf_rate = reshape(Sponttrf_rate, [stim_lev.len stim_rate.len]);
-        stdSponttrf_rate = reshape(stdSponttrf_rate, [stim_lev.len stim_rate.len]);
+        spontTRF_rate = reshape(spontTRF_rate, [stim_lev.len stim_rate.len]);
+        stdSpontTRF_rate = reshape(stdSpontTRF_rate, [stim_lev.len stim_rate.len]);
         
         block.custom.TRFnum{k}{l} = trf_num;
         block.custom.TRFnum_max{k}(l) = max(max(trf_num));
         block.custom.TRFrate{k}{l} = trf_rate;
-        block.custom.SpontTRFrate{k}{l} = Sponttrf_rate;
-        block.custom.stdSpontTRFrate{k}{l} = stdSponttrf_rate;
+        block.custom.SpontTRFrate{k}{l} = spontTRF_rate;
+        block.custom.stdSpontTRFrate{k}{l} = stdSpontTRF_rate;
         block.custom.TRFrate_max{k}(l) = max(max(trf_rate));
         
         % -----
