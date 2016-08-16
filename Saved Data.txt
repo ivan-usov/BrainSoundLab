@@ -62,13 +62,13 @@ block
     .custom - all custom parameters specific for a certain experiment
     
     Additional parameters in experiments that are saved upon execution of the following processing functions:
-    calcTRF ('ToneFine', 'ToneFine2xMix', 'WhiteNoise', '2tones' and 'IsodB2xMix_WN')
+    calcTRF ('ToneFine', 'ToneFine2xMix', 'WhiteNoise', '2tones', 'IsodB2xMix' and 'IsodB2xMix_WN')
         .TRF{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - TRF plots
         .TRF_max{<group number>}(<electrode channel>) - maximal value in a corresponding TRF plot
-        .TRF_filt{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - filtered TRF plots
-        .TRF_clean{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - clean TRF plots
 
     analyseTRF ('ToneFine', 'ToneFine2xMix', 'WhiteNoise' and '2tones')
+        .TRF_filt{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - filtered TRF plots
+        .TRF_clean{<group number>}{<electrode channel>}(stim(1).len, stim(2).len) - clean TRF plots
         .dPrime{<group number>}(<electrode channel>) - d' of a corresponding TRF plot
         .BF{<group number>}(<electrode channel>) - Best Frequency (kHz)
         .Thr{<group number>}(<electrode channel>) - min (threshold) level at Best Frequency (dB)
