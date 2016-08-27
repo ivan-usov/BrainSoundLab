@@ -9,7 +9,7 @@ if labbookFileName == 0
 end
 
 % Change the current folder for the easier future navigation
-% cd(labbookFilePath);
+cd(labbookFilePath);
 
 % Create a new Labbook with the information from the Excel file
 this.labbook = Labbook(labbookFileName, labbookFilePath);
