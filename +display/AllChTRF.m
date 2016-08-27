@@ -12,7 +12,7 @@ for k = 1:block.nChannels
         'Tag', ['im_allChTRF_' num2str(k)], 'Parent', ax, ...
         'ButtonDownFcn', @(h,ed)Callback_imageSelectCh(h, BSL));
     axis(ax, 'tight');
-    set(ax, 'CLim', [0 max(block.custom.TRF_max{BSL.curGroup})]);
+    set(ax, 'CLim', [0 max(block.custom.TRF_max{BSL.curGroup})+eps]);
 end
 
 function Callback_imageSelectCh(hObject, BSL)
