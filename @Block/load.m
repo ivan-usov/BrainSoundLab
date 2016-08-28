@@ -151,7 +151,7 @@ end
 for k = 1:nChannels
     idx = (chan == k);
     this.spikeTimings_raw{k} = ts(idx);
-    this.snips{k} = snips(idx, :);
+%     this.snips{k} = snips(idx, :); TODO: fix snipes per cluster
     
     % Spikes filters
     for l = 1:length(this.filtSpikes)
