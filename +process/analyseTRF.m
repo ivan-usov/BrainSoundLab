@@ -63,10 +63,6 @@ for k = group
         end
         block.custom.TRF_clean{k}{l} = trf_clean;
         
-        
-        
-        
-        
         if isnan(trf_clean)==1
             block.custom.dPrime{k}(l) = 0;
             block.custom.BF{k}(l) = NaN;
@@ -81,31 +77,29 @@ for k = group
             trf_signal = trf(trf_clean ~= 0);
             trf_noise = trf(trf_clean == 0);
             %what Ivan computed
-            %block.custom.dPrime{k}(l) = (mean(trf_signal) - mean(trf_noise)) / sqrt((var(trf_signal) + var(trf_noise))/2);
+            block.custom.dPrime{k}(l) = (mean(trf_signal) - mean(trf_noise)) / sqrt((var(trf_signal) + var(trf_noise))/2);
             
-            % what WeImpale had - changed by TRB Dec 9 2015
-            trf_mask = trf_clean;
-            (trf_mask ~=0)== 1;
-            trfmaskupper = trf_mask;
-            trfmaskupper(1:round(size(trf_mask,1)/2),:) = 1;
-            trf_noise2 = trf(trfmaskupper < 1);
-            randTrialNum = 1000;
-            sampNum = 40;
-            noiseDistr = zeros(randTrialNum,1);
-            signalDistr = zeros(randTrialNum,1);
-            for i = 1:randTrialNum;
-                if (length(trf_signal)*0.5 > sampNum)
-                    signalDistr(i) = mean(trf_signal(ceil(rand(sampNum,1)*(length(trf_signal)-1))+1));
-                    noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
-                else
-                    signalDistr(i) = mean([trf_signal(ceil(rand(round(length(trf_signal)*0.5),1)*(length(trf_signal)-1))+1);...
-                        trf_noise2(ceil(rand(sampNum-round(length(trf_signal)*0.5),1)*(length(trf_noise2)-1))+1)]);
-                    noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
-                end;
-            end;
-            block.custom.dPrime{k}(l) = (mean(signalDistr)-mean(noiseDistr))*2/(std(signalDistr)+std(noiseDistr));
-            
-            
+%             % what WeImpale had - changed by TRB Dec 9 2015
+%             trf_mask = trf_clean;
+%             (trf_mask ~=0)== 1;
+%             trfmaskupper = trf_mask;
+%             trfmaskupper(1:round(size(trf_mask,1)/2),:) = 1;
+%             trf_noise2 = trf(trfmaskupper < 1);
+%             randTrialNum = 1000;
+%             sampNum = 40;
+%             noiseDistr = zeros(randTrialNum,1);
+%             signalDistr = zeros(randTrialNum,1);
+%             for i = 1:randTrialNum;
+%                 if (length(trf_signal)*0.5 > sampNum)
+%                     signalDistr(i) = mean(trf_signal(ceil(rand(sampNum,1)*(length(trf_signal)-1))+1));
+%                     noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
+%                 else
+%                     signalDistr(i) = mean([trf_signal(ceil(rand(round(length(trf_signal)*0.5),1)*(length(trf_signal)-1))+1);...
+%                         trf_noise2(ceil(rand(sampNum-round(length(trf_signal)*0.5),1)*(length(trf_noise2)-1))+1)]);
+%                     noiseDistr(i) = mean(trf_noise(ceil(rand(sampNum,1)*(length(trf_noise)-1))+1));
+%                 end;
+%             end;
+%             block.custom.dPrime{k}(l) = (mean(signalDistr)-mean(noiseDistr))*2/(std(signalDistr)+std(noiseDistr));
             
             % ----- Best frequency
             [~, ind_bf] = max(sum(trf_clean, 1));
