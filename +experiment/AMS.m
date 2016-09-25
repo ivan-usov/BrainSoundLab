@@ -29,7 +29,7 @@ classdef AMS < Block
         
         function sweepTime = calcSweepTime(this)
             % Sweep time in seconds directly from the second stimulus condition
-            sweepTime = this.stimConditions(:, 2)/1000;
+            sweepTime = abs(this.stimConditions(:, 2)/1000);
         end
         
         function spikes = getSpikeTimings(this, t_min, t_max, group, chan)
@@ -45,7 +45,7 @@ classdef AMS < Block
                     spikeTimings = spikeTimings(map);
                 end
                 
-                sweepTime = repmat(abs(this.stimConditions(:, 2)/1000), 1, length(this.selRep));
+                sweepTime = repmat(this.calcSweepTime(), 1, length(this.selRep));
                 
                 spikes = arrayfun(@spike_count, ...
                     this.stimTimings(:, this.selRep, group), sweepTime, ...
