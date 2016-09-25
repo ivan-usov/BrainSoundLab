@@ -27,6 +27,11 @@ classdef AMS < Block
             tMax = NaN;
         end
         
+        function sweepTime = calcSweepTime(this)
+            % Sweep time in seconds directly from the second stimulus condition
+            sweepTime = this.stimConditions(:, 2)/1000;
+        end
+        
         function spikes = getSpikeTimings(this, t_min, t_max, group, chan)
             if isnan(t_min) || isnan(t_max) % get spikes for the timeProcRange
                 % Find all spikes in a time window according to the sweepTime
