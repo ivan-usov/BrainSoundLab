@@ -1,7 +1,7 @@
 classdef DeviantTone < Block
     
     properties (Transient)
-        panels = {};
+        panels = {'DT_sequence'};
     end
     
     methods
@@ -21,6 +21,7 @@ classdef DeviantTone < Block
     
     methods (Static)
         function customAnalysis(group, chan)
+        	process.analyseDT(group, chan);
         end
     end
 end
