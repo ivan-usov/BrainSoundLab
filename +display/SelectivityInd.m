@@ -39,3 +39,14 @@ result = block.custom.RSIrate{BSL.curGroup}{BSL.curChannel};
 plot([-1, 1], result, 'Marker', '.', 'Parent', ax);
 set(ax, 'XTick', [-1, 1], 'XTickLabel', {'Down', 'Up'});
 
+% ----- Update information
+cc = BSL.curChannel;
+inf_data = {
+    'DSI@75''', block.custom.DSIwspont{1,1}{1,cc}(13),block.custom.DSIwspont{1,1}{1,cc}(14),block.custom.DSIwspont{1,1}{1,cc}(15), ''; ...
+    };
+
+set(findobj('Tag', 'tab_information'), 'Data', inf_data, ...
+    'ColumnName', {'Parameter', '40dB', '60dB','80dB', ''}, ...
+    'ColumnFormat', {'char', 'bank', 'bank', 'bank','char'});
+
+
