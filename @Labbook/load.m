@@ -88,8 +88,3 @@ this.lightPower = this.lightPower(ind);
 this.videoEMG = this.videoEMG(ind);
 this.blockComments = this.blockComments(ind);
 
-function x = removeNaN(x)
-if all(isnan(x))
-    x = [];
-end
-
