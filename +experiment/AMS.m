@@ -45,7 +45,7 @@ classdef AMS < Block
                     spikeTimings = spikeTimings(map);
                 end
                 
-                sweepTime = repmat(abs(this.stimConditions(:, 2)/1000), 1, length(this.selRep));
+                sweepTime = repmat(this.calcSweepTime(), 1, length(this.selRep));
                 
                 spikes = arrayfun(@spike_count, ...
                     this.stimTimings(:, this.selRep, group), sweepTime, ...

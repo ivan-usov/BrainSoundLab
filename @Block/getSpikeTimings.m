@@ -9,9 +9,10 @@ end
 spikeTimings = this.spikeTimings{chan};
 
 if ~isempty(this.filtSpikes)
+    map = true(size(spikeTimings));
     for k = 1:length(this.filtSpikes)
         filtParam = this.filtSpikes(k).val(this.filtSpikes(k).sel);
-        map = ismember(this.filtSpikes(k).map{chan}, filtParam);
+        map = map & ismember(this.filtSpikes(k).map{chan}, filtParam);
     end
     spikeTimings = spikeTimings(map);
 end

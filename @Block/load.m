@@ -114,8 +114,10 @@ switch spikeDataType
         snips = eNeu.data;
         
     case 'Klusta'
-        [ts, chan, snips, clustNum] = ...
-            this.loadKlustaSpikeData(blockPath, blockName, nChannels);
+        [spikes, clustNum, snips, su] = this.loadKlustaSpikeData(blockPath, blockName);
+        
+        ts = spikes.ts;
+        chan = spikes.chan+1;
         
         % Assign 'clustNum' as a filtering condition for spikes
         filtSpikesData{end+1} = clustNum;
@@ -123,6 +125,21 @@ switch spikeDataType
         this.filtSpikes(end).val = unique(clustNum);
         this.filtSpikes(end).len = length(unique(clustNum));
         this.filtSpikes(end).sel = 1:this.filtSpikes(end).len;
+        
+        % Assign 'su' (single unit) as a filtering condition for spikes
+        filtSpikesData{end+1} = su;
+        this.filtSpikes(end+1).label = 'Single Unit';
+        this.filtSpikes(end).val = unique(su);
+        this.filtSpikes(end).len = length(unique(su));
+        this.filtSpikes(end).sel = 1:this.filtSpikes(end).len;
+        
+        % TODO: this should be generalized or removed completely
+        % get cluster numbers per Single Unit selection
+        for i = 1:this.filtSpikes(end).len
+            temp_clust = unique(clustNum(su == this.filtSpikes(end).val(i)));
+            this.custom.temp_clusters{i} = ismember(this.filtSpikes(end-1).val, temp_clust);
+        end
+        % -----------------------------------------------------------------
 end
 
 % Organize spikes data
@@ -134,7 +151,7 @@ end
 for k = 1:nChannels
     idx = (chan == k);
     this.spikeTimings_raw{k} = ts(idx);
-    this.snips{k} = snips(idx, :);
+%     this.snips{k} = snips(idx, :); TODO: fix snipes per cluster
     
     % Spikes filters
     for l = 1:length(this.filtSpikes)

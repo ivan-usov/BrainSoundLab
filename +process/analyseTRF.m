@@ -7,7 +7,7 @@ if nargin == 0
 end
 
 % Preallocate in case of the first time calculation
-if ~isfield(block.custom, 'TRF')
+if ~isfield(block.custom, 'TRF_filt')
     block.custom.TRF_filt = cell(1, block.nGroups);
     block.custom.TRF_clean = cell(1, block.nGroups);
     block.custom.dPrime = cell(1, block.nGroups);

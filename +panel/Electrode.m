@@ -45,5 +45,5 @@ ind = strcmp(str{val}, allElectrodeTypes);
 set(findobj('Tag', 'tab_channels_electrode'), ...
     'Data', BSL.labbook.customElectrode(ind).sites);
 
-display.plotAllChTRF(BSL);
+display.AllChTRF();
 

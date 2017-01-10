@@ -170,6 +170,28 @@ if ~isempty(block.filtSpikes)
             'Max', 10, ...
             'String', block.filtSpikes(ind).val, ...
             'Value', block.filtSpikes(ind).sel);
+        
+        % TODO: this should be generalized or removed completely
+        % modify Clusters list based on Single Unit selection, e.g. show in
+        % red clusters that don't belong to the selected Single Unit filter
+        if strcmp(block.filtSpikes(ind).label, 'Cluster')
+            su_ind = find(strcmp({block.filtSpikes.label}, 'Single Unit'));
+            su_sel = block.filtSpikes(su_ind).sel;
+            unsel_ind = find(~ismember(1:block.filtSpikes(su_ind).len, su_sel));
+            if ~isempty(unsel_ind)
+                idx = block.custom.temp_clusters{unsel_ind(1)};
+                for i = unsel_ind(2:end)
+                    idx = idx & this.custom.temp_clusters{i};
+                end
+                
+                lines = num2cell(block.filtSpikes(ind).val);
+                for i = find(idx)'
+                    lines(i) = {['<HTML><BODY color="Red">', num2str(lines{i})]};
+                end
+                set(findobj('Tag', 'lb_groupsFiltersVal_raster'), 'String', lines);
+            end
+        end
+        % -----------------------------------------------------------------
     end
 end
 

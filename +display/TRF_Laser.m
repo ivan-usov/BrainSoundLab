@@ -22,10 +22,10 @@ localColorScale = findobj('Tag', 'cb_localColorScale_TRFlaser');
 if get(localColorScale, 'Value') == get(localColorScale, 'Max')
     maxVals = [block.custom.TRF_max{1}(BSL.curChannel), block.custom.TRF_max{2}(BSL.curChannel)];
     set([ax1, ax2, ax1_clean, ax2_clean], ...
-        'CLim', [0 max(maxVals)]);
+        'CLim', [0 max(maxVals)+eps]);
 else
     set([ax1, ax2, ax1_clean, ax2_clean], ...
-        'CLim', [0 max(block.custom.TRF_max{BSL.curGroup})]);
+        'CLim', [0 max(block.custom.TRF_max{BSL.curGroup})+eps]);
 end
 
 % Arrange a colorbar
