@@ -105,11 +105,18 @@ uicontrol(p, 'Style', 'pushbutton', ...
     'Position', [920 ph-330 51 22]);
 % Auto range
 uicontrol(p, 'Style', 'pushbutton', ...
-    'String', 'Auto range', ...
+    'String', 'Auto', ...
     'Enable', 'off', ...
     'Tag', 'pb_autoRange_raster', ...
     'Callback', @(h,ed) Callback_autoRange(h, BSL), ...
-    'Position', [870 ph-352 101 22]);
+    'Position', [870 ph-352 51 22]);
+% Fix range
+uicontrol(p, 'Style', 'pushbutton', ...
+    'String', 'Fix', ...
+    'Enable', 'off', ...
+    'Tag', 'pb_fixRange_raster', ...
+    'Callback', @(h,ed) Callback_fixRange(h, BSL), ...
+    'Position', [920 ph-352 51 22]);
 % Repetitions
 uicontrol(p, 'Style', 'text', 'HorizontalAlignment', 'left', ...
     'String', 'Repetitions:', ...
@@ -222,7 +229,7 @@ if ~isempty(block.filtSpikes)
     idx = strcmp({block.filtSpikes.label}, str(ind));
     if any(idx)
         block.filtSpikes(idx).sel = val;
-        block.processData('all');
+        block.processData('timeRasterMod');
     end
 end
 
@@ -230,7 +237,7 @@ if ~isempty(block.filtStim)
     idx = strcmp({block.filtStim.label}, str(ind));
     if any(idx)
         block.filtStim(idx).sel = val;
-        block.processData('all');
+        block.processData('timeRasterMod');
     end
 end
 
@@ -323,6 +330,21 @@ block.autoProcTime{BSL.curGroup}(BSL.curChannel) = true;
 set(findobj('Tag', 'pb_autoRange_raster'), 'Enable', 'off');
 
 block.processData('timeProcMod', BSL.curGroup, BSL.curChannel);
+
+function Callback_fixRange(hObject, BSL)
+block = BSL.block;
+
+t_min = block.timeProcMin{BSL.curGroup}(BSL.curChannel);
+t_max = block.timeProcMax{BSL.curGroup}(BSL.curChannel);
+
+for k = 1:block.nGroups
+    for l = 1:block.nChannels
+        block.timeProcMin{k}(l) = t_min;
+        block.timeProcMax{k}(l) = t_max;
+        block.autoProcTime{k}(l) = false;
+        block.processData('timeProcMod', k, l);
+    end
+end
 
 function Callback_repetitions(hObject, BSL)
 block = BSL.block;
