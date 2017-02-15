@@ -342,7 +342,7 @@ for k = 1:block.nGroups
         block.timeProcMin{k}(l) = t_min;
         block.timeProcMax{k}(l) = t_max;
         block.autoProcTime{k}(l) = false;
-        block.processData('timeProcMod', k, l);
+        block.processData('fixProcRange', k, l);
     end
 end
 
