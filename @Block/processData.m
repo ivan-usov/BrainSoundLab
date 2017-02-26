@@ -40,8 +40,17 @@ elseif strcmp(token, 'timeProcMod')
     this.customAnalysis(group, chan);
     
 elseif strcmp(token, 'autoProcRange')
-    % Auto range for timeProcMin or timeProcMax for a certain channel
+    % Auto range for timeProcMin and timeProcMax for a certain channel
     timeProcValues(this, group, chan);
+    spikesTimeProc(this, group, chan);
+    spontSpikesTimeProc(this, group, chan);
+    peakParameters(this, group, chan);
+    
+    this.customAnalysis(group, chan);
+    
+elseif strcmp(token, 'fixProcRange')
+    % Fix range for timeProcMin and timeProcMax of all channels and groups
+    spikesTimeRaster(this);
     spikesTimeProc(this, group, chan);
     spontSpikesTimeProc(this, group, chan);
     peakParameters(this, group, chan);

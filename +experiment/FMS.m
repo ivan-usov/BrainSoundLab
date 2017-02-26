@@ -28,8 +28,8 @@ classdef FMS < Block
         end
         
         function sweepTime = calcSweepTime(this)
-            % FMS increased window analysis
-            sweepTime = calcSweepTime@Block(this) + 0.015;
+            % FMS increased window analysis if last number is different from 0.00
+            sweepTime = calcSweepTime@Block(this) + 0.000;
         end
         
         function spikes = getSpikeTimings(this, t_min, t_max, group, chan)

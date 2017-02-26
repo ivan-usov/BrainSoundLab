@@ -11,31 +11,32 @@ block
     .nTotal - total number of repetitions in the block (nTotal = nRep * nTrials)
     .nTrials - number of trials per repetitions (nTrials = nTotal / nRep)
 
-    .stim{<stimulus number>} - data of the stimuli conditions (there are always two stimuli, in case of only one specified in the 'experiment' file the other one will be blank)
+    .stim(<stimulus number>) - data of the stimuli conditions (there are always two stimuli, in case of only one specified in the 'experiment' file the other one will be blank)
         .label - name of the stimulus (e.g. 'Level, dB')
         .val - values of the stimulus (e.g. [0 5 10 15 ... 75 80])
-        .len - number of values of the stimulus (equivalent to 'length(block.stim{<stimulus number>}.val)')
+        .len - number of values of the stimulus (equivalent to 'length(block.stim(<stimulus number>).val)')
         .ind - index number of the stimulus
     .stimConditions(nTrials, <number of stimuli> = 2) - sorted [1 2] column-wise stimuli conditions
     .stimTimings(nTrials, nRep) - the corresponding to 'stimConditions' stimuli timings of all repetitions
 
-    .group{<group number>} - data of the grouping conditions (blank group in case of no groups specified in the 'getGroupingConditions' function)
+    .group(<group number>) - data of the grouping conditions (blank group in case of no groups specified in the 'getGroupingConditions' function)
         .label - name of the group (e.g. 'Laser')
         .val - values of the group (e.g. [0 1])
-        .len - number of values of the group (equivalent to 'length(block.group{<group number>}.val)')
+        .len - number of values of the group (equivalent to 'length(block.group(<group number>).val)')
         .sel - selected values of the group in the Raster panel
 
-    .filtStim{<stimuli filter number>} - data of the stimuli filtering conditions (empty in case of no filters specified in the 'getStimuliFilteringConditions' function)
+    .filtStim(<stimuli filter number>) - data of the stimuli filtering conditions (empty in case of no filters specified in the 'getStimuliFilteringConditions' function)
         .label - name of the stimuli filter (e.g. 'Behavioral')
         .val - values of the stimuli filter (e.g. [0 1])
-        .len - number of values of the stimuli filter (equivalent to 'length(block.filtStim{<stimuli filter number>}.val)')
+        .len - number of values of the stimuli filter (equivalent to 'length(block.filtStim(<stimuli filter number>).val)')
         .sel - selected values of the stimuli filter in the Raster panel
 
-    .filtSpikes{<spikes filter number>} - data of the spikes filtering conditions (empty in case of no filters specified in the 'getSpikesFilteringConditions' function)
+    .filtSpikes(<spikes filter number>) - data of the spikes filtering conditions (empty in case of no filters specified in the 'getSpikesFilteringConditions' function)
         .label - name of the spikes filter (e.g. 'Cluster')
         .val - values of the spikes filter (e.g. [7 8 10 15 16 17 25])
-        .len - number of values of the spikes filter (equivalent to 'length(block.filtSpikes{<spikes filter number>}.val)')
+        .len - number of values of the spikes filter (equivalent to 'length(block.filtSpikes(<spikes filter number>).val)')
         .sel - selected values of the spikes filter in the Raster panel
+        .map{<electrode channel>}(<spike number>) - correspondence of spike timings in 'block.spikeTimings_sup' to the values of the spikes filter
 
     .spikeTimings_raw{<electrode channel>}(<spike number>) - raw (non-suppressed) spike timings detected in a certain electrode channel
     .spikeTimings_sup{<electrode channel>}(<spike number>) - suppressed spike timings detected in a certain electrode channel

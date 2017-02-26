@@ -1,7 +1,7 @@
 classdef FMS2xMix < Block
     
     properties (Transient)
-        panels = {'SelectivityInd', 'TuningCurves'};
+       panels = {'TuningCurves','TuningCurves_Laser'};
     end
     
     methods

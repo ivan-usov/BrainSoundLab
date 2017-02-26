@@ -122,5 +122,5 @@ else % Sorting by the prime or second stimulus
     % plot(BSL.stimPrime.val, Sponttrf_rate, 'Marker', '.', 'Parent', ax_spontActivity);
     % xlabel(ax_spontActivity, BSL.stimPrime.label);
 end
-end
+
 

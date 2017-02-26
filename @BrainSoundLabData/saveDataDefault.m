@@ -1,9 +1,9 @@
 function isSaved = saveDataDefault(this)
 % GUI Callback function for the 'Save default' button in the Information panel
 
-% Get fileName and filePath
+% Get fileName and filePath (append 'BSL_' to the fileName)
 [fileName, filePath] = uiputfile('*.mat', 'Save Data As', ...
-    fullfile(this.dataPath, this.dataName));
+    fullfile(this.dataPath, ['BSL_', this.dataName]));
 if isequal(fileName, 0); isSaved = false; return
 else isSaved = true;
 end
