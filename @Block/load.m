@@ -93,21 +93,12 @@ for k = 1:this.nGroups
         
         %Redefine repetition index MAGDA        
 
-  tf=strcmp(this.stim(1).label, 'Thi_, ms');
-
- 
-
-if tf==1                        
-
-     
-
-        for m=0:length(ind_rep)-1
-
-           ind_rep(m+1)=m*10+1+(l-1); 
-
-        end
-
-end 
+    tf=strcmp(this.stim(1).label, 'Thi_, ms');
+    if tf==1                        
+       for m=0:length(ind_rep)-1
+           ind_rep(m+1)=m*this.nRep+1+(l-1); 
+       end
+    end 
         
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
         ind_ord = ind_rep(ind_sort);
