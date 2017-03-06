@@ -90,6 +90,25 @@ for k = 1:this.nGroups
     
     for l = 1:this.nRep
         ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
+        
+        %Redefine repetition index MAGDA        
+
+  tf=strcmp(this.stim(1).label, 'Thi_, ms');
+
+ 
+
+if tf==1                        
+
+     
+
+        for m=0:length(ind_rep)-1
+
+           ind_rep(m+1)=m*10+1+(l-1); 
+
+        end
+
+end 
+        
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
         ind_ord = ind_rep(ind_sort);
         this.stimTimings(:, l, k) = onset(ind_ord);
