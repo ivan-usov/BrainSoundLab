@@ -89,16 +89,11 @@ for k = 1:this.nGroups
     onset = all_onset(ind);
     
     for l = 1:this.nRep
-        ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
-        
-        %Redefine repetition index MAGDA        
-
-    tf=strcmp(this.stim(1).label, 'Thi_, ms');
-    if tf==1                        
-       for m=0:length(ind_rep)-1
-           ind_rep(m+1)=m*this.nRep+1+(l-1); 
-       end
-    end 
+        if strcmp(this.stim(1).label, 'Thi_, ms') % TODO: generalize
+            ind_rep = l : this.nRep : this.nTotal;
+        else
+            ind_rep = 1+(l-1)*this.nTrials : l*this.nTrials;
+        end
         
         [rep, ind_sort] = sortrows(stimCond(ind_rep, :), [1 2]);
         ind_ord = ind_rep(ind_sort);

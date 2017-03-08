@@ -31,18 +31,16 @@ for k = group
         
         t_min = block.timeProcMin{k}(l);
         t_max = block.timeProcMax{k}(l);
-                       
-        tf=strcmp(block.stim(1).label, 'Thi_, ms');
-
-        if tf==1
         
-        trf = reshape(sum(cellfun(@length, spikes), 2) ...
-            /length(block.selRep), [stim_lev.len stim_fq.len]);
-        else
-         trf = reshape(sum(cellfun(@length, spikes), 2) ...
-            /length(block.selRep)/(t_max-t_min), [stim_lev.len stim_fq.len]);    
+        if strcmp(block.stim(1).label, 'Thi_, ms') % TODO: generalize
             
-        end   
+            trf = reshape(sum(cellfun(@length, spikes), 2) ...
+                /length(block.selRep), [stim_lev.len stim_fq.len]);
+        else
+            trf = reshape(sum(cellfun(@length, spikes), 2) ...
+                /length(block.selRep)/(t_max-t_min), [stim_lev.len stim_fq.len]);
+            
+        end
         
         block.custom.TRF{k}{l} = trf;
         block.custom.TRF_max{k}(l) = max(max(trf));
