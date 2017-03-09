@@ -58,9 +58,6 @@ classdef THItest < Block
                 ind1 = find(spikeTimings >= t0, 1, 'first');
                 ind2 = find(spikeTimings <= t0 + sweepTime, 1, 'last');
                 spikes = spikeTimings(ind1:ind2) - t0;
-                % n=n+1;
-                this.custom.sweepTime=sweepTime;
-                this.custom.spikes=spikes;
             end
         end
     end
