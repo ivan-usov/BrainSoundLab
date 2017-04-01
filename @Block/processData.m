@@ -50,7 +50,6 @@ elseif strcmp(token, 'autoProcRange')
     
 elseif strcmp(token, 'fixProcRange')
     % Fix range for timeProcMin and timeProcMax of all channels and groups
-    spikesTimeRaster(this);
     spikesTimeProc(this, group, chan);
     spontSpikesTimeProc(this, group, chan);
     peakParameters(this, group, chan);
